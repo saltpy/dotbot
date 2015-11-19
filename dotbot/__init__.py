@@ -2,6 +2,10 @@ from typing import Any, Sequence
 import random
 
 
+class TicketError(Exception):
+    pass
+
+
 class Ticket(object):
 
     def __init__(
@@ -44,12 +48,12 @@ class TicketDelta(object):
 
     def __str__(self):
         s = "TicketDelta<"
-        s += "owner=" + str(self.owner)
-        s += ",repo=" + str(self.repo)
-        s += ",issue_number=" + str(self.issue_number)
-        s += ",comment=" + str(self.comment)
-        s += ",assignee=" + str(self.assignee)
-        s += ">"
+        s += "owner='" + str(self.owner)
+        s += "',repo='" + str(self.repo)
+        s += "',issue_number='" + str(self.issue_number)
+        s += "',comment='" + str(self.comment)
+        s += "',assignee='" + str(self.assignee)
+        s += "'>"
         return s
 
     def __repr__(self):
@@ -79,14 +83,23 @@ def assign(ticket: Ticket, team: Sequence[TeamMember]) -> TicketDelta:
             ticket.owner,
             ticket.repo,
             ticket.issue_number,
-            comment="Cannot assign a DoT with a team of " + str(len(team)) + " people."
+            comment="".join(
+                [
+                    "Cannot assign a DoT with a team of ",
+                    str(len(team)),
+                    " people."
+                ]
+            )
         )
 
-    asignee = random.choice([tm.name for tm in team if tm.name != ticket.assignee])
+    assignee = random.choice(
+        [tm.name for tm in team if tm.name != ticket.assignee]
+    )
 
     return TicketDelta(
         owner=ticket.owner,
         repo=ticket.repo,
         issue_number=ticket.issue_number,
-        assignee=asignee
+        assignee=assignee,
+        comment="DoTBot reassigned to " + assignee + " for review and testing."
     )

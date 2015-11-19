@@ -30,7 +30,8 @@ def test_assign_with_two_team_members():
             owner="smallco",
             repo="bigproj",
             issue_number=1,
-            assignee="Bob"
+            assignee="Bob",
+            comment="DoTBot reassigned to Bob for review and testing."
         ),
         assign(
             Ticket(
